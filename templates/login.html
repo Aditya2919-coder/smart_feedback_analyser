@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+    .glass-box {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 40px 30px;
+      width: 350px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      animation: fadeIn 1s ease forwards;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #00d4ff;
+      text-shadow: 0 0 8px #00d4ff;
+      animation: slideDown 1s ease;
+    }
+    label {
+      display: block;
+      text-align: left;
+      margin: 12px 0 6px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 15px;
+      transition: all .3s ease;
+    }
+    input:focus {
+      box-shadow: 0 0 8px #00d4ff;
+      border: 1px solid #00d4ff;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      background: linear-gradient(45deg, #00d4ff, #007bff);
+      color: #fff;
+      transition: transform .2s ease, box-shadow .3s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px #00d4ff;
+    }
+    .error {
+      color: #ff6b6b;
+      margin-bottom: 10px;
+    }
+    p {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    a {
+      color: #00d4ff;
+      text-decoration: none;
+      transition: color .3s ease;
+    }
+    a:hover {
+      color: #fff;
+    }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity:0; transform:scale(.95);} to{opacity:1; transform:scale(1);} }
+    @keyframes slideDown { from {opacity:0; transform:translateY(-20px);} to{opacity:1; transform:translateY(0);} }
+  </style>
+</head>
+<body>
+  <div class="glass-box">
+    <h2>{% if role=='admin' %}Admin Login{% else %}Tourist Login{% endif %}</h2>
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    <form method="post" action="">
+      <label>Email</label>
+      <input name="email" type="email" required>
+      <label>Password</label>
+      <input name="password" type="password" required>
+      <button type="submit">Login</button>
+    </form>
+    {% if role!='admin' %}
+    <p>Don't have an account? <a href="/tourist/register">Register</a></p>
+    {% endif %}
+  </div>
+</body>
+</html>

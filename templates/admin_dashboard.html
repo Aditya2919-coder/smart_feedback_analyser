@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Admin Dashboard</title><link rel="stylesheet" href="/static/styles.css"></head>
+<body>
+<div class="container">
+  <h2>Admin Dashboard</h2>
+  <h3>All Feedback</h3>
+  <ul>
+    {% for f in feedbacks %}
+    <li><strong>{{ f['fullname'] or 'Unknown' }}</strong> ({{ f['rating'] }}/5): {{ f['comment'] }}</li>
+    {% endfor %}
+  </ul>
+</div>
+</body>
+</html>

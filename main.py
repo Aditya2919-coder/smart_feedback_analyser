@@ -1,0 +1,204 @@
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+import sqlite3, hashlib, os, datetime, json
+
+BASE_DIR = os.path.dirname(__file__)
+DB_PATH = os.path.join(BASE_DIR, "data.db")
+
+app = FastAPI()
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+
+# ---------------- Database ----------------
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    if not os.path.exists(DB_PATH):
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+        CREATE TABLE users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fullname TEXT,
+            email TEXT UNIQUE,
+            password_hash TEXT,
+            role TEXT
+        )""")
+        cur.execute("""
+        CREATE TABLE feedback (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            location TEXT,
+            visit_date TEXT,
+            rating INTEGER,
+            category TEXT,
+            comment TEXT,
+            recommend TEXT,
+            created_at TEXT
+        )""")
+        # Sample admin
+        pw = hashlib.sha256("admin123".encode()).hexdigest()
+        cur.execute("INSERT INTO users (fullname,email,password_hash,role) VALUES (?,?,?,?)",
+                    ("Admin User","admin@example.com",pw,"admin"))
+        conn.commit()
+        conn.close()
+
+@app.on_event("startup")
+def startup():
+    init_db()
+
+# ---------------- Routes ----------------
+
+@app.get("/")
+def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+# Tourist register/login
+@app.get("/tourist/register")
+def tourist_register_get(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request, "role":"tourist"})
+
+@app.post("/tourist/register")
+def tourist_register_post(request: Request, fullname: str = Form(...), email: str = Form(...), password: str = Form(...)):
+    pw = hashlib.sha256(password.encode()).hexdigest()
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("INSERT INTO users (fullname,email,password_hash,role) VALUES (?,?,?,?)",
+                    (fullname,email,pw,"tourist"))
+        conn.commit()
+    except Exception as e:
+        return templates.TemplateResponse("register.html", {"request": request, "role":"tourist", "error": str(e)})
+    return RedirectResponse(url="/tourist/login", status_code=303)
+
+@app.get("/tourist/login")
+def tourist_login_get(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request, "role":"tourist"})
+
+@app.post("/tourist/login")
+def tourist_login_post(request: Request, email: str = Form(...), password: str = Form(...)):
+    pw = hashlib.sha256(password.encode()).hexdigest()
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE email=? AND password_hash=? AND role=?", (email,pw,"tourist"))
+    row = cur.fetchone()
+    if not row:
+        return templates.TemplateResponse("login.html", {"request": request, "role":"tourist", "error":"Invalid credentials"})
+    return RedirectResponse(url=f"/tourist/dashboard?uid={row['id']}", status_code=303)
+
+# Dashboard
+@app.get("/tourist/dashboard")
+def tourist_dashboard(request: Request, uid: int = None):
+    conn = get_db()
+    cur = conn.cursor()
+    user = None
+    if uid:
+        cur.execute("SELECT * FROM users WHERE id=?", (uid,))
+        user = cur.fetchone()
+    cur.execute("SELECT f.*, u.fullname FROM feedback f LEFT JOIN users u ON f.user_id=u.id ORDER BY f.id DESC")
+    feedbacks = cur.fetchall()
+    return templates.TemplateResponse("tourist_dashboard.html", {"request": request, "user": user, "feedbacks": feedbacks})
+
+# Submit feedback
+@app.post("/tourist/submit_feedback")
+def submit_feedback(
+    request: Request,
+    uid: int = Form(...),
+    location: str = Form(...),
+    visit_date: str = Form(...),
+    rating: int = Form(...),
+    category: str = Form(...),
+    comment: str = Form(...),
+    recommend: str = Form(...)
+):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO feedback 
+        (user_id, location, visit_date, rating, category, comment, recommend, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        uid, location, visit_date, rating, category, comment, recommend, datetime.datetime.utcnow().isoformat()
+    ))
+    conn.commit()
+    return RedirectResponse(url=f"/tourist/dashboard?uid={uid}", status_code=303)
+
+# ---------------- Feedback Analysis ----------------
+@app.get("/tourist/analysis")
+def analysis_page(request: Request, uid: int = None):
+    conn = get_db()
+    cur = conn.cursor()
+
+    # Ratings count for chart
+    ratings = [0, 0, 0, 0, 0]
+    cur.execute("SELECT rating, COUNT(*) as cnt FROM feedback GROUP BY rating")
+    rows = cur.fetchall()
+    for row in rows:
+        if 1 <= row["rating"] <= 5:
+            ratings[row["rating"] - 1] = row["cnt"]
+
+    # Total feedback
+    cur.execute("SELECT COUNT(*) as total_feedback FROM feedback")
+    total_feedback = cur.fetchone()["total_feedback"]
+
+    # Average rating
+    cur.execute("SELECT AVG(rating) as avg_rating FROM feedback")
+    avg_rating = cur.fetchone()["avg_rating"]
+    avg_rating = round(avg_rating, 2) if avg_rating else 0
+
+    # Total places visited
+    cur.execute("SELECT COUNT(DISTINCT location) as places_count FROM feedback")
+    places_count = cur.fetchone()["places_count"]
+
+    # Category counts
+    cur.execute("SELECT category, COUNT(*) as cnt FROM feedback GROUP BY category")
+    category_rows = cur.fetchall()
+    categories = {row["category"]: row["cnt"] for row in category_rows}
+
+    # Recommendation counts
+    cur.execute("SELECT recommend, COUNT(*) as cnt FROM feedback GROUP BY recommend")
+    recommend_rows = cur.fetchall()
+    recommend = {row["recommend"]: row["cnt"] for row in recommend_rows}
+
+    return templates.TemplateResponse(
+        "analysis.html",
+        {
+            "request": request,
+            "ratings": json.dumps(ratings),
+            "categories": json.dumps(categories),
+            "recommend": json.dumps(recommend),
+            "user": uid,
+            "total_feedback": total_feedback,
+            "avg_rating": avg_rating,
+            "places_count": places_count
+        }
+    )
+
+# Admin login/dashboard
+@app.get("/admin/login")
+def admin_login_get(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request, "role":"admin"})
+
+@app.post("/admin/login")
+def admin_login_post(request: Request, email: str = Form(...), password: str = Form(...)):
+    pw = hashlib.sha256(password.encode()).hexdigest()
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE email=? AND password_hash=? AND role=?", (email,pw,"admin"))
+    row = cur.fetchone()
+    if not row:
+        return templates.TemplateResponse("login.html", {"request": request, "role":"admin", "error":"Invalid credentials"})
+    return RedirectResponse(url="/admin/dashboard", status_code=303)
+
+@app.get("/admin/dashboard")
+def admin_dashboard(request: Request):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT f.*, u.fullname FROM feedback f LEFT JOIN users u ON f.user_id=u.id ORDER BY f.id DESC")
+    feedbacks = cur.fetchall()
+    return templates.TemplateResponse("admin_dashboard.html", {"request": request, "feedbacks": feedbacks})

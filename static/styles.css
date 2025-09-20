@@ -1,0 +1,4 @@
+body { background: linear-gradient(135deg,#0f2027,#2c5364); color:#fff; font-family:sans-serif; }
+.container { max-width:900px; margin:50px auto; padding:20px; background:rgba(255,255,255,0.08); border-radius:20px; backdrop-filter:blur(12px); }
+button { cursor:pointer; background:linear-gradient(135deg,#00e0ff,#0077ff); border:none; color:#fff; padding:12px; border-radius:8px; font-weight:600; }
+input, textarea, select { width:100%; padding:10px; border-radius:8px; margin-bottom:14px; border:none; background:rgba(255,255,255,0.15); color:#fff; }
