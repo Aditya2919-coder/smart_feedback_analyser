@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Form, Query
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import sqlite3, hashlib, os, datetime, json
@@ -52,7 +52,7 @@ def init_db():
 def startup():
     init_db()
 
-# ---------------- Routes ----------------
+# ---------------- Home ----------------
 @app.get("/")
 def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -73,6 +73,8 @@ def tourist_register_post(request: Request, fullname: str = Form(...), email: st
         conn.commit()
     except Exception as e:
         return templates.TemplateResponse("register.html", {"request": request, "role":"tourist", "error": str(e)})
+    finally:
+        conn.close()
     return RedirectResponse(url="/tourist/login", status_code=303)
 
 @app.get("/tourist/login")
@@ -86,6 +88,7 @@ def tourist_login_post(request: Request, email: str = Form(...), password: str =
     cur = conn.cursor()
     cur.execute("SELECT * FROM users WHERE email=? AND password_hash=? AND role=?", (email,pw,"tourist"))
     row = cur.fetchone()
+    conn.close()
     if not row:
         return templates.TemplateResponse("login.html", {"request": request, "role":"tourist", "error":"Invalid credentials"})
     return RedirectResponse(url=f"/tourist_dashboard?uid={row['id']}", status_code=303)
@@ -141,7 +144,7 @@ def analysis_page(request: Request, uid: int = Query(...)):
                                                         "user": user, "total_feedback": total_feedback,
                                                         "avg_rating": avg_rating, "places_count": places_count})
 
-# ---------------- Admin ----------------
+# ---------------- Admin Login/Dashboard ----------------
 @app.get("/admin/login")
 def admin_login_get(request: Request):
     return templates.TemplateResponse("login.html", {"request": request, "role":"admin"})
@@ -153,6 +156,7 @@ def admin_login_post(request: Request, email: str = Form(...), password: str = F
     cur = conn.cursor()
     cur.execute("SELECT * FROM users WHERE email=? AND password_hash=? AND role=?", (email,pw,"admin"))
     row = cur.fetchone()
+    conn.close()
     if not row:
         return templates.TemplateResponse("login.html", {"request": request, "role":"admin", "error":"Invalid credentials"})
     return RedirectResponse(url="/admin/dashboard", status_code=303)
@@ -176,6 +180,35 @@ def admin_delete_feedback(fid: int = Form(...)):
     conn.close()
     return RedirectResponse(url="/admin/dashboard", status_code=303)
 
+# ---------------- Admin Register ----------------
+@app.get("/admin/register", response_class=HTMLResponse)
+def admin_register_get(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request, "role": "admin", "error": None})
 
+@app.post("/admin/register", response_class=HTMLResponse)
+def admin_register_post(
+    request: Request,
+    fullname: str = Form(...),
+    email: str = Form(...),
+    password: str = Form(...),
+    admin_code: str = Form(None)
+):
+    if admin_code != "SECRET123":  # Replace with your secret code
+        error = "Invalid admin code!"
+        return templates.TemplateResponse("register.html", {"request": request, "role": "admin", "error": error})
 
+    pw = hashlib.sha256(password.encode()).hexdigest()
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO users (fullname,email,password_hash,role) VALUES (?,?,?,?)",
+            (fullname, email, pw, "admin")
+        )
+        conn.commit()
+    except Exception as e:
+        return templates.TemplateResponse("register.html", {"request": request, "role": "admin", "error": str(e)})
+    finally:
+        conn.close()
 
+    return RedirectResponse(url="/admin/login", status_code=303)
