@@ -175,3 +175,7 @@ def admin_delete_feedback(fid: int = Form(...)):
     conn.commit()
     conn.close()
     return RedirectResponse(url="/admin/dashboard", status_code=303)
+
+
+
+
