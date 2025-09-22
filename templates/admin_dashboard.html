@@ -1,15 +1,279 @@
-<!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Admin Dashboard</title><link rel="stylesheet" href="/static/styles.css"></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    
+    header {
+      background: #4f46e5;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 22px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .logo i {
+      font-size: 26px;
+    }
+    
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .admin-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #7c73e6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .dashboard-title {
+      padding: 25px 20px 15px;
+      font-size: 24px;
+      color: #2d3748;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      padding: 20px;
+      background: #f8fafc;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .stat-card i {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #4f46e5;
+    }
+    
+    .stat-card h3 {
+      font-size: 28px;
+      margin-bottom: 5px;
+      color: #2d3748;
+    }
+    
+    .stat-card p {
+      color: #718096;
+      font-size: 14px;
+    }
+    
+    .feedback-section {
+      padding: 20px;
+    }
+    
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #2d3748;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title i {
+      color: #4f46e5;
+    }
+    
+    .feedback-list {
+      list-style: none;
+    }
+    
+    .feedback-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .feedback-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    
+    .feedback-info {
+      flex: 1;
+    }
+    
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .user-name {
+      font-weight: 600;
+      color: #2d3748;
+    }
+    
+    .rating {
+      color: #f59e0b;
+      font-size: 14px;
+    }
+    
+    .comment {
+      color: #4a5568;
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+    
+    .delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .delete-btn:hover {
+      background: #dc2626;
+    }
+    
+    @media (max-width: 768px) {
+      .feedback-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .delete-btn {
+        margin-top: 15px;
+        align-self: flex-end;
+      }
+      
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
 <body>
-<div class="container">
-  <h2>Admin Dashboard</h2>
-  <h3>All Feedback</h3>
-  <ul>
-    {% for f in feedbacks %}
-    <li><strong>{{ f['fullname'] or 'Unknown' }}</strong> ({{ f['rating'] }}/5): {{ f['comment'] }}</li>
-    {% endfor %}
-  </ul>
-</div>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <i class="fas fa-shield-alt"></i>
+        <span>Admin Dashboard</span>
+      </div>
+      <div class="admin-info">
+        <div class="admin-avatar">A</div>
+        <span>Admin User</span>
+      </div>
+    </header>
+    
+    
+    
+    
+    <div class="feedback-section">
+      <div class="section-title">
+        <i class="fas fa-comments"></i>
+        <h3>All Feedback</h3>
+      </div>
+      
+      <ul class="feedback-list">
+        {% for f in feedbacks %}
+          <li class="feedback-item">
+            <div class="feedback-info">
+              <div class="feedback-header">
+                <span class="user-name">{{ f['fullname'] or 'Unknown' }}</span>
+                <span class="rating">
+                  {% for i in range(f['rating']|int) %}
+                    <i class="fas fa-star"></i>
+                  {% endfor %}
+                  {% for i in range(5 - (f['rating']|int)) %}
+                    <i class="far fa-star"></i>
+                  {% endfor %}
+                  ({{ f['rating'] }}/5)
+                </span>
+              </div>
+              <p class="comment">{{ f['comment'] }}</p>
+            </div>
+            
+            <form action="/admin/delete_feedback" method="post">
+              <input type="hidden" name="fid" value="{{ f['id'] }}">
+              <button type="submit" class="delete-btn" onclick="return confirm('Delete this feedback?');">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Simple confirmation for delete actions
+    document.addEventListener('DOMContentLoaded', function() {
+      const deleteButtons = document.querySelectorAll('.delete-btn');
+      
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          if (!confirm('Are you sure you want to delete this feedback?')) {
+            e.preventDefault();
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

@@ -27,10 +27,10 @@
     }
     h2 {
       margin-bottom: 20px;
-      font-size: 26px;
+      font-size: 30px;
       letter-spacing: 1px;
       color: #00e0ff;
-      text-shadow: 0 0 10px #00e0ff;
+      /* text-shadow: 0 0 10px #00e0ff; */
     }
     label {
       display: block;
@@ -56,7 +56,7 @@
       box-shadow: 0 0 8px #00e0ff;
     }
     button {
-      width: 100%;
+      width: 106%;
       padding: 12px;
       border-radius: 8px;
       border: none;
@@ -65,12 +65,12 @@
       cursor: pointer;
       background: linear-gradient(135deg, #00e0ff, #0077ff);
       color: #fff;
-      box-shadow: 0 0 12px #00e0ff;
+      /* box-shadow: 0 0 12px #00e0ff; */
       transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
     button:hover {
       transform: translateY(-3px);
-      box-shadow: 0 0 20px #00e0ff, 0 0 30px #0077ff;
+      /* box-shadow: 0 0 20px #00e0ff, 0 0 30px #0077ff; */
     }
     .error {
       color: #ff4b5c;
@@ -85,7 +85,7 @@
 </head>
 <body>
   <div class="container">
-    <h2>{% if role=='admin' %}Admin Register{% else %}Tourist Register{% endif %}</h2>
+    <h2>{% if role=='admin' %}Admin Register{% else %}User Register{% endif %}</h2>
     {% if error %}<p class="error">{{ error }}</p>{% endif %}
     <form method="post" action="">
       <label>Full Name</label>
@@ -97,7 +97,7 @@
       {% if role=='admin' %}
       <label>Admin Code</label>
       <input name="admin_code" type="text">
-      {% endif %}
+      {% endif %}<br><br>
       <button type="submit">Register</button>
     </form>
   </div>

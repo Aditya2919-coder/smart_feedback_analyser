@@ -36,13 +36,20 @@
     padding: 10px;
     margin-bottom: 30px;
   }
-  a {
+  .btn-back {
     display: block;
-    text-align: center;
-    margin-top: 20px;
-    text-decoration: none;
-    color: #007ab8;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #007ab8;
+    color: white;
+    border: none;
+    border-radius: 6px;
     font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn-back:hover {
+    background-color: #005f87;
   }
 </style>
 </head>
@@ -67,12 +74,18 @@
 
 <canvas id="ratingsChart"></canvas>
 
-<a href="/tourist/dashboard?uid={{ user }}">Back to Dashboard</a>
+<!-- Back to Dashboard Button -->
+<a href="/tourist_dashboard?uid={{ user['id'] }}">📊 View Feedback Analysis</a>
 
 <script>
+// Redirect to dashboard
+function goDashboard() {
+    window.location.href = '/tourist/dashboard?uid={{ user }}'; // replace URL if needed
+}
+
+// Ratings chart
 const ratings = JSON.parse('{{ ratings|safe }}');
 
-// Ratings bar chart
 const ctxRatings = document.getElementById("ratingsChart").getContext("2d");
 new Chart(ctxRatings, {
   type: 'bar',

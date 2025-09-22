@@ -1,190 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Share Your Experience</title>
-<style>
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #007ab8, #00a8c0);
-    color: #222;
-    padding: 30px;
-  }
-  h3 {
-    font-weight: 700;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    user-select: none;
-  }
-  form {
-    max-width: 900px;
-  }
-  .form-group {
-    margin-bottom: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  label {
-    flex-basis: 100%;
-    margin-bottom: 6px;
-    font-weight: 500;
-    user-select: none;
-  }
-  /* Two column layout for certain fields */
-  .form-group.two-cols label {
-    flex-basis: 45%;
-  }
-  .form-group.two-cols input[type="text"],
-  .form-group.two-cols input[type="date"],
-  .form-group.two-cols select {
-    flex-basis: 45%;
-    margin-right: 10%;
-  }
-  /* Inputs, selects, textarea */
-  input[type="text"],
-  input[type="date"],
-  select,
-  textarea {
-    width: 100%;
-    padding: 10px 14px;
-    border-radius: 6px;
-    border: none;
-    box-shadow: 0 0 6px rgb(0 0 0 / 0.12);
-    font-size: 1rem;
-    transition: box-shadow 0.3s ease;
-    outline-offset: 2px;
-  }
-  input[type="text"]:focus,
-  input[type="date"]:focus,
-  select:focus,
-  textarea:focus {
-    box-shadow: 0 0 10px #49a1e8;
-    outline: none;
-  }
-  textarea {
-    resize: vertical;
-  }
-  /* Recommendation radio buttons */
-  .form-group.recommend label {
-    flex-basis: auto;
-    margin-right: 20px;
-    font-weight: 400;
-    user-select: none;
-  }
-  .form-group.recommend input[type="radio"] {
-    margin-right: 6px;
-    transform: scale(1.2);
-    cursor: pointer;
-  }
-  /* Submit button */
-  button[type="submit"] {
-    background: #1777ff;
-    color: white;
-    font-weight: 700;
-    font-size: 1.1rem;
-    padding: 12px 28px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgb(23 119 255 / 0.5);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  button[type="submit"]:hover {
-    background: #005ec8;
-    box-shadow: 0 6px 20px rgb(0 94 200 / 0.8);
-  }
-  /* Responsive two-column layout for location/date and rating/category */
-  @media (min-width: 600px) {
-    .two-cols {
-      justify-content: space-between;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Share Your Experience</title>
+  <style>
+    body {
+      margin-left: 14%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #007ab8, #00a8c0);
+      color: #222;
+      padding: 30px;
     }
-    .two-cols > .form-group {
-      flex-basis: 48%;
+
+    h3 {
+      padding-left: 21%;
+
+      font-weight: 900;
+      font-size: 2.6rem;
       margin-bottom: 20px;
+      user-select: none;
     }
-  }
-</style>
+
+    form {
+      max-width: 900px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    label {
+      flex-basis: 100%;
+      margin-bottom: 6px;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    /* Two column layout for certain fields */
+    .form-group.two-cols label {
+      flex-basis: 45%;
+    }
+
+    .form-group.two-cols input[type="text"],
+    .form-group.two-cols input[type="date"],
+    .form-group.two-cols select {
+      flex-basis: 45%;
+      margin-right: 10%;
+    }
+
+    /* Inputs, selects, textarea */
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: none;
+      box-shadow: 0 0 6px rgb(0 0 0 / 0.12);
+      font-size: 1rem;
+      transition: box-shadow 0.3s ease;
+      outline-offset: 2px;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    select:focus,
+    textarea:focus {
+      box-shadow: 0 0 10px #49a1e8;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    /* Recommendation radio buttons */
+    .form-group.recommend label {
+      flex-basis: auto;
+      margin-right: 20px;
+      font-weight: 400;
+      user-select: none;
+    }
+
+    .form-group.recommend input[type="radio"] {
+      margin-right: 6px;
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    /* Submit button */
+    button[type="submit"] {
+      background: #1777ff;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 12px 28px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgb(23 119 255 / 0.5);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background: #005ec8;
+      box-shadow: 0 6px 20px rgb(0 94 200 / 0.8);
+    }
+
+    /* Responsive two-column layout for location/date and rating/category */
+    @media (min-width: 600px) {
+      .two-cols {
+        justify-content: space-between;
+      }
+
+      .two-cols>.form-group {
+        flex-basis: 48%;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<h3>Share Your Experience</h3>
+  <h3>Share Your Experience</h3>
 
-<form method="post" action="/tourist/submit_feedback" novalidate>
-  
-  <!-- User ID (hidden) -->
-  <input type="hidden" name="uid" value="{{ user['id'] if user else '' }}">
+  <form method="post" action="/tourist/submit_feedback" novalidate>
 
-  <div class="two-cols" style="display:flex; flex-wrap:wrap; gap:20px;">
-    <!-- Location / Place Visited -->
-    <div class="form-group" style="flex:1 1 45%;">
-      <label for="location">Location / Place Visited</label>
-      <input type="text" id="location" name="location" placeholder="Enter location or place" required>
+    <!-- User ID (hidden) -->
+    <input type="hidden" name="uid" value="{{ user['id'] if user else '' }}">
+
+    <div class="two-cols" style="display:flex; flex-wrap:wrap; gap:20px;">
+      <!-- Location / Place Visited -->
+      <div class="form-group" style="flex:1 1 45%;">
+        <label for="location">Location / Place Visited</label>
+        <input type="text" id="location" name="location" placeholder="Enter location or place" required>
+      </div>
+
+      <!-- Visit Date -->
+      <div class="form-group" style="flex:1 1 45%;">
+        <label for="visit_date">Visit Date</label>
+        <input type="date" id="visit_date" name="visit_date" required>
+      </div>
     </div>
 
-    <!-- Visit Date -->
-    <div class="form-group" style="flex:1 1 45%;">
-      <label for="visit_date">Visit Date</label>
-      <input type="date" id="visit_date" name="visit_date" required>
+    <div class="two-cols" style="display:flex; flex-wrap:wrap; gap:20px;">
+      <!-- Overall Rating -->
+      <div class="form-group" style="flex:1 1 45%;">
+        <label for="rating">Overall Rating</label>
+        <select id="rating" name="rating" required>
+          <option value="">Select Rating</option>
+          <option value="1">⭐ 1</option>
+          <option value="2">⭐ 2</option>
+          <option value="3">⭐ 3</option>
+          <option value="4">⭐ 4</option>
+          <option value="5">⭐ 5</option>
+        </select>
+      </div>
+
+      <!-- Category -->
+      <div class="form-group" style="flex:1 1 45%;">
+        <label for="category"> Select Category</label>
+        <select id="category" name="category" required>
+          <option value="Restaurant/Food">Category</option>
+          <option value="Restaurant/Food"><Hotel>
+          </option>
+          <option value="Restaurant/Food">Restaurant/Food</option>
+          <option value="Food">Tourist Attraction</option>
+          <option value="Culture">Trasportation</option>
+          <option value="Nature">Activity/tour</option>
+          <option value="Adventure">Shopping</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
     </div>
-  </div>
 
-  <div class="two-cols" style="display:flex; flex-wrap:wrap; gap:20px;">
-    <!-- Overall Rating -->
-    <div class="form-group" style="flex:1 1 45%;">
-      <label for="rating">Overall Rating</label>
-      <select id="rating" name="rating" required>
-        <option value="">Select Rating</option>
-        <option value="1">⭐ 1</option>
-        <option value="2">⭐ 2</option>
-        <option value="3">⭐ 3</option>
-        <option value="4">⭐ 4</option>
-        <option value="5">⭐ 5</option>
-      </select>
+    <!-- Feedback Comment -->
+    <div class="form-group">
+      <label for="comment">Your Feedback</label>
+      <textarea id="comment" name="comment" rows="4" placeholder="Share your detailed experience..."
+        required></textarea>
     </div>
 
-    <!-- Category -->
-    <div class="form-group" style="flex:1 1 45%;">
-      <label for="category">Category</label>
-      <select id="category" name="category" required>
-        <option value="">Select Category</option>
-        <option value="Food">Food</option>
-        <option value="Culture">Culture</option>
-        <option value="Nature">Nature</option>
-        <option value="Adventure">Adventure</option>
-        <option value="Other">Other</option>
-      </select>
+    <!-- Recommendation -->
+    <div class="form-group recommend">
+      <label>Would you recommend this place?</label>
+      <input type="radio" id="yes" name="recommend" value="Yes" required>
+      <label for="yes">👍 Yes</label>
+      <input type="radio" id="no" name="recommend" value="No">
+      <label for="no">👎 No</label>
     </div>
-  </div>
 
-  <!-- Feedback Comment -->
-  <div class="form-group">
-    <label for="comment">Your Feedback</label>
-    <textarea id="comment" name="comment" rows="4" placeholder="Share your detailed experience..." required></textarea>
-  </div>
+    <!-- Submit Button -->
+    <div class="form-group">
+      <button type="submit">Submit Feedback</button>
+    </div>
 
-  <!-- Recommendation -->
-  <div class="form-group recommend">
-    <label>Would you recommend this place?</label>
-    <input type="radio" id="yes" name="recommend" value="Yes" required>
-    <label for="yes">👍 Yes</label>
-    <input type="radio" id="no" name="recommend" value="No">
-    <label for="no">👎 No</label>
-  </div>
+  </form>
 
-  <!-- Submit Button -->
-  <div class="form-group">
-    <button type="submit">Submit Feedback</button>
-  </div>
-
-</form>
-
-<!-- Feedback Analysis Link -->
-<div class="form-group">
+  <!-- Feedback Analysis Link -->
+  <!-- <div class="form-group">
   <a href="/tourist/analysis?uid={{ user['id'] }}" style="color:#e0e0e0; user-select:none;">📊 View Feedback Analysis</a>
-</div>
+</div> -->
 
 </body>
+
 </html>
